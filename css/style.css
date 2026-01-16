@@ -363,11 +363,18 @@ body {
     color: var(--text-secondary);
 }
 
-/* When screenshots are added */
+/* Screenshot images */
 .screenshot-item img {
     width: 100%;
     border-radius: var(--card-radius);
     box-shadow: 0 8px 32px var(--shadow);
+    margin-bottom: 16px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.screenshot-item img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 48px var(--shadow-strong);
 }
 
 /* ===== Shortcuts Section ===== */
