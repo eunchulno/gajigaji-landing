@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5D3A6E"/>
+      <stop offset="100%" stop-color="#4A2D58"/>
+    </linearGradient>
+    <radialGradient id="mascotBody" cx="30%" cy="30%">
+      <stop offset="0%" stop-color="#9B6FB0"/>
+      <stop offset="50%" stop-color="#7B4F8B"/>
+      <stop offset="100%" stop-color="#5D3A6E"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="150" fill="white" opacity="0.03"/>
+  <circle cx="1100" cy="530" r="200" fill="white" opacity="0.03"/>
+
+  <!-- Mascot (Left side) -->
+  <g transform="translate(180, 165)">
+    <!-- Stem -->
+    <path d="M 75 35 Q 50 15 75 0 Q 100 15 75 35" fill="#6B8E23"/>
+    <!-- Body -->
+    <ellipse cx="75" cy="110" rx="65" ry="75" fill="url(#mascotBody)"/>
+    <!-- Highlight -->
+    <ellipse cx="45" cy="80" rx="15" ry="25" fill="white" opacity="0.15"/>
+    <!-- Eyes -->
+    <ellipse cx="55" cy="100" rx="10" ry="13" fill="#F5F5F5"/>
+    <ellipse cx="95" cy="100" rx="10" ry="13" fill="#F5F5F5"/>
+    <!-- Mouth -->
+    <path d="M 55 135 Q 75 150 95 135" stroke="#F5F5F5" stroke-width="4" fill="none"/>
+    <!-- Blush -->
+    <ellipse cx="35" cy="120" rx="10" ry="6" fill="#FFB6C1" opacity="0.5"/>
+    <ellipse cx="115" cy="120" rx="10" ry="6" fill="#FFB6C1" opacity="0.5"/>
+  </g>
+
+  <!-- Text Content (Right side) -->
+  <g transform="translate(450, 200)">
+    <!-- App Name -->
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="white">
+      GajiGaji
+    </text>
+
+    <!-- Tagline -->
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="36" fill="white" opacity="0.9">
+      귀여운 가지와 함께하는
+    </text>
+    <text x="0" y="130" font-family="Arial, sans-serif" font-size="36" fill="white" opacity="0.9">
+      할일 관리
+    </text>
+
+    <!-- Features -->
+    <text x="0" y="220" font-family="Arial, sans-serif" font-size="22" fill="white" opacity="0.7">
+      Windows 전용  ·  완전 무료  ·  오픈소스
+    </text>
+  </g>
+
+  <!-- Bottom accent line -->
+  <rect x="0" y="610" width="1200" height="20" fill="#6B8E23"/>
+</svg>

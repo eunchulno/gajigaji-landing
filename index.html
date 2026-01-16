@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GajiGaji - 귀여운 가지와 함께하는 할일 관리</title>
+    <meta name="description" content="귀여운 가지 캐릭터와 함께 할일을 관리하세요. 심플하고 강력한 Windows 전용 투두 앱.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="GajiGaji - 귀여운 가지와 함께하는 할일 관리">
+    <meta property="og:description" content="귀여운 가지 캐릭터와 함께 할일을 관리하세요. 심플하고 강력한 Windows 전용 투두 앱.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 32 32" width="32" height="32">
+                        <!-- Stem -->
+                        <ellipse cx="16" cy="5" rx="6" ry="5" fill="#6B8E23"/>
+                        <!-- Body -->
+                        <ellipse cx="16" cy="18" rx="12" ry="12" fill="#5D3A6E"/>
+                        <!-- Eyes -->
+                        <ellipse cx="12" cy="16" rx="2.5" ry="2.5" fill="#F5F5F5"/>
+                        <ellipse cx="20" cy="16" rx="2.5" ry="2.5" fill="#F5F5F5"/>
+                        <!-- Mouth -->
+                        <path d="M 12 22 Q 16 25 20 22" stroke="#F5F5F5" stroke-width="1.5" fill="none"/>
+                    </svg>
+                    <span class="logo-text">GajiGaji</span>
+                </div>
+                <nav class="nav">
+                    <a href="#features">기능</a>
+                    <a href="#screenshots">스크린샷</a>
+                    <a href="#download">다운로드</a>
+                    <button class="theme-toggle" id="themeToggle" aria-label="테마 변경">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>귀여운 가지와 함께<br>할일을 관리하세요</h1>
+                    <p class="hero-subtitle">
+                        심플하지만 강력한 기능. 귀여운 가지 캐릭터가 당신의 생산성을 응원합니다.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="#download" class="btn btn-primary">
+                            <span class="btn-icon">⬇️</span>
+                            무료 다운로드
+                        </a>
+                        <a href="https://github.com/YOUR_USERNAME/GajiGaji" class="btn btn-secondary" target="_blank">
+                            <span class="btn-icon">⭐</span>
+                            GitHub
+                        </a>
+                    </div>
+                    <p class="hero-note">Windows 10/11 전용 · 완전 무료 · 오픈소스</p>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-mascot">
+                        <svg viewBox="0 0 120 160" class="mascot-svg">
+                            <!-- Stem -->
+                            <path d="M 60 30 Q 45 15 60 0 Q 75 15 60 30" fill="#6B8E23"/>
+                            <!-- Body -->
+                            <ellipse cx="60" cy="90" rx="50" ry="60" fill="url(#bodyGradient)"/>
+                            <!-- Highlight -->
+                            <ellipse cx="35" cy="70" rx="10" ry="18" fill="white" opacity="0.2"/>
+                            <!-- Eyes -->
+                            <ellipse class="mascot-eye left-eye" cx="45" cy="85" rx="8" ry="10" fill="#F5F5F5"/>
+                            <ellipse class="mascot-eye right-eye" cx="75" cy="85" rx="8" ry="10" fill="#F5F5F5"/>
+                            <!-- Mouth -->
+                            <path d="M 45 110 Q 60 120 75 110" stroke="#F5F5F5" stroke-width="3" fill="none"/>
+                            <!-- Blush -->
+                            <ellipse cx="30" cy="100" rx="8" ry="5" fill="#FFB6C1" opacity="0.5"/>
+                            <ellipse cx="90" cy="100" rx="8" ry="5" fill="#FFB6C1" opacity="0.5"/>
+                            <defs>
+                                <radialGradient id="bodyGradient" cx="30%" cy="30%">
+                                    <stop offset="0%" stop-color="#7B4F8B"/>
+                                    <stop offset="50%" stop-color="#5D3A6E"/>
+                                    <stop offset="100%" stop-color="#4A2D58"/>
+                                </radialGradient>
+                            </defs>
+                        </svg>
+                        <div class="mascot-bubble">
+                            <span>오늘도 화이팅!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">주요 기능</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🍆</div>
+                    <h3>귀여운 펫 시스템</h3>
+                    <p>할일을 완료하면 가지가 기뻐해요. 레벨업하며 함께 성장하세요.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>주간 캘린더</h3>
+                    <p>드래그앤드롭으로 간편하게 일정을 관리하고 날짜를 변경하세요.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⌨️</div>
+                    <h3>키보드 단축키</h3>
+                    <p>Vim 스타일 네비게이션. 마우스 없이도 빠르게 할일을 관리하세요.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌙</div>
+                    <h3>다크 모드</h3>
+                    <p>눈이 편안한 다크 모드를 지원합니다. Ctrl+D로 전환하세요.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏷️</div>
+                    <h3>해시태그</h3>
+                    <p>#태그로 할일을 분류하고 빠르게 필터링하세요.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>자동 백업</h3>
+                    <p>데이터가 매일 자동으로 백업됩니다. 7일간 보관.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section class="screenshots" id="screenshots">
+        <div class="container">
+            <h2 class="section-title">스크린샷</h2>
+            <div class="screenshots-slider">
+                <div class="screenshot-item">
+                    <div class="screenshot-placeholder">
+                        <span>메인 화면 스크린샷</span>
+                        <p>여기에 앱 스크린샷을 추가하세요</p>
+                    </div>
+                    <p class="screenshot-caption">심플하고 직관적인 메인 화면</p>
+                </div>
+                <div class="screenshot-item">
+                    <div class="screenshot-placeholder">
+                        <span>주간 캘린더 스크린샷</span>
+                        <p>여기에 앱 스크린샷을 추가하세요</p>
+                    </div>
+                    <p class="screenshot-caption">드래그앤드롭 주간 캘린더</p>
+                </div>
+                <div class="screenshot-item">
+                    <div class="screenshot-placeholder">
+                        <span>다크 모드 스크린샷</span>
+                        <p>여기에 앱 스크린샷을 추가하세요</p>
+                    </div>
+                    <p class="screenshot-caption">눈이 편안한 다크 모드</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shortcuts Section -->
+    <section class="shortcuts">
+        <div class="container">
+            <h2 class="section-title">키보드 단축키</h2>
+            <div class="shortcuts-grid">
+                <div class="shortcut-group">
+                    <h4>네비게이션</h4>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl</kbd> + <kbd>1</kbd>
+                        <span>할일함</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl</kbd> + <kbd>2</kbd>
+                        <span>오늘</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl</kbd> + <kbd>3</kbd>
+                        <span>주간달력</span>
+                    </div>
+                </div>
+                <div class="shortcut-group">
+                    <h4>빠른 실행</h4>
+                    <div class="shortcut-item">
+                        <kbd>Q</kbd>
+                        <span>새 할일 추가</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl</kbd> + <kbd>F</kbd>
+                        <span>검색</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl</kbd> + <kbd>D</kbd>
+                        <span>다크 모드</span>
+                    </div>
+                </div>
+                <div class="shortcut-group">
+                    <h4>할일 관리</h4>
+                    <div class="shortcut-item">
+                        <kbd>J</kbd> / <kbd>K</kbd>
+                        <span>위/아래 이동</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Space</kbd>
+                        <span>완료 토글</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>E</kbd>
+                        <span>편집</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section class="download" id="download">
+        <div class="container">
+            <div class="download-content">
+                <h2>지금 무료로 다운로드하세요</h2>
+                <p>Windows 10/11에서 사용 가능합니다.</p>
+                <a href="https://github.com/YOUR_USERNAME/GajiGaji/releases/latest" class="btn btn-primary btn-large">
+                    <span class="btn-icon">⬇️</span>
+                    Windows용 다운로드
+                </a>
+                <div class="download-info">
+                    <span>📦 약 50MB</span>
+                    <span>🔒 바이러스 없음</span>
+                    <span>💻 .NET 8 필요</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <svg class="logo-icon" viewBox="0 0 32 32" width="24" height="24">
+                        <ellipse cx="16" cy="5" rx="6" ry="5" fill="#6B8E23"/>
+                        <ellipse cx="16" cy="18" rx="12" ry="12" fill="#5D3A6E"/>
+                        <ellipse cx="12" cy="16" rx="2.5" ry="2.5" fill="#F5F5F5"/>
+                        <ellipse cx="20" cy="16" rx="2.5" ry="2.5" fill="#F5F5F5"/>
+                    </svg>
+                    <span>GajiGaji</span>
+                </div>
+                <div class="footer-links">
+                    <a href="https://github.com/YOUR_USERNAME/GajiGaji" target="_blank">GitHub</a>
+                    <a href="https://github.com/YOUR_USERNAME/GajiGaji/issues" target="_blank">버그 리포트</a>
+                    <a href="https://github.com/YOUR_USERNAME/GajiGaji/blob/main/LICENSE" target="_blank">라이선스</a>
+                </div>
+                <p class="footer-copyright">
+                    Made with 💜 · © 2025 GajiGaji
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
