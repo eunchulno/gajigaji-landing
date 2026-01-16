@@ -1,0 +1,24 @@
+<UserControl x:Class="SlimeTodo.Views.QuickAddBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Margin="0,0,0,8">
+        <TextBox x:Name="QuickAddTextBox"
+                 Style="{DynamicResource QuickAddTextBoxStyle}"
+                 Text="{Binding QuickAddText, UpdateSourceTrigger=PropertyChanged}"
+                 KeyDown="QuickAddTextBox_KeyDown">
+            <TextBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding AddTaskCommand}"/>
+                <KeyBinding Key="Escape" Command="{Binding ClearQuickAddCommand}"/>
+            </TextBox.InputBindings>
+        </TextBox>
+
+        <!-- Placeholder -->
+        <TextBlock Text="+ 할일 추가... (today, tomorrow, +3d)"
+                   Foreground="{DynamicResource TextLightBrush}"
+                   VerticalAlignment="Center"
+                   Margin="14,0,0,0"
+                   IsHitTestVisible="False"
+                   Visibility="{Binding QuickAddText.Length, Converter={StaticResource IntToVisibilityConverter}}"/>
+    </Grid>
+</UserControl>

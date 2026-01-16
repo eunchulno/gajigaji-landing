@@ -1,0 +1,42 @@
+<Application x:Class="SlimeTodo.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:SlimeTodo.Converters"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Fonts -->
+            <FontFamily x:Key="PretendardFont">pack://application:,,,/Fonts/#Pretendard Variable</FontFamily>
+            <FontFamily x:Key="GalmuriFont">pack://application:,,,/Fonts/#Galmuri11</FontFamily>
+
+            <!-- Default App Font -->
+            <Style TargetType="Window">
+                <Setter Property="FontFamily" Value="{StaticResource PretendardFont}"/>
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="{StaticResource PretendardFont}"/>
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="FontFamily" Value="{StaticResource PretendardFont}"/>
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="FontFamily" Value="{StaticResource PretendardFont}"/>
+            </Style>
+
+            <!-- Converters -->
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:InverseBoolConverter x:Key="InverseBool"/>
+            <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+            <converters:ZeroToVisibilityConverter x:Key="ZeroToVisibilityConverter"/>
+            <converters:BoolToNavStyleConverter x:Key="BoolToNavStyleConverter"/>
+            <converters:BoolToVisibilityInverseConverter x:Key="BoolToVisibilityInverseConverter"/>
+            <converters:BoolToArrowConverter x:Key="BoolToArrowConverter"/>
+            <converters:StringToColorBrushConverter x:Key="StringToColorBrush"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

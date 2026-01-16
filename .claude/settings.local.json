@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(timeout 5 dotnet run:*)",
+      "Bash(taskkill:*)",
+      "Bash(start SlimeTodo.exe)",
+      "Bash(dir:*)",
+      "Bash(powershell -Command \"Get-Content \"\"$env:LOCALAPPDATA\\\\GajiGaji\\\\data.json\"\" | Select-Object -First 30\")",
+      "Bash(powershell -Command \"Get-Content ''C:\\\\Users\\\\User\\\\AppData\\\\Local\\\\GajiGaji\\\\data.json'' | Select-Object -First 30\")",
+      "Bash(powershell -Command \"Remove-Item ''C:\\\\Users\\\\User\\\\AppData\\\\Local\\\\GajiGaji\\\\data.json'' -Force; Write-Host ''data.json deleted''\")",
+      "Bash(powershell:*)",
+      "Bash(cmd /c \"dir %LOCALAPPDATA%\\\\GajiGaji 2>nul || echo 폴더없음\")",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nInitial landing page\n\n- Hero section with animated mascot\n- Features, screenshots, shortcuts sections\n- Dark mode support\n- Responsive design\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git fetch:*)",
+      "Bash(git reset:*)"
+    ]
+  }
+}
