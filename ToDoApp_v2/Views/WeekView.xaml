@@ -316,7 +316,8 @@
                             <!-- Task List -->
                             <ScrollViewer Grid.Row="1"
                                           VerticalScrollBarVisibility="Auto"
-                                          HorizontalScrollBarVisibility="Disabled">
+                                          HorizontalScrollBarVisibility="Disabled"
+                                          Style="{DynamicResource ThinOverlayScrollViewer}">
                                 <ItemsControl ItemsSource="{Binding Tasks}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>

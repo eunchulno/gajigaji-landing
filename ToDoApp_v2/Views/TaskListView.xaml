@@ -109,10 +109,11 @@
                                 <ColumnDefinition Width="Auto"/>  <!-- 1: Checkbox -->
                                 <ColumnDefinition Width="*"/>     <!-- 2: Title -->
                                 <ColumnDefinition Width="Auto"/>  <!-- 3: Add SubTask -->
-                                <ColumnDefinition Width="Auto"/>  <!-- 4: Important -->
-                                <ColumnDefinition Width="Auto"/>  <!-- 5: Recurrence -->
-                                <ColumnDefinition Width="Auto"/>  <!-- 6: Due Date -->
-                                <ColumnDefinition Width="Auto"/>  <!-- 7: Delete -->
+                                <ColumnDefinition Width="Auto"/>  <!-- 4: Add HashTag -->
+                                <ColumnDefinition Width="Auto"/>  <!-- 5: Important -->
+                                <ColumnDefinition Width="Auto"/>  <!-- 6: Recurrence -->
+                                <ColumnDefinition Width="Auto"/>  <!-- 7: Due Date -->
+                                <ColumnDefinition Width="Auto"/>  <!-- 8: Delete -->
                             </Grid.ColumnDefinitions>
 
                             <!-- Expand Button -->
@@ -227,6 +228,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0"
                                                Text="{Binding Title}"
@@ -257,6 +259,16 @@
                                                Margin="8,0,0,0"
                                                VerticalAlignment="Top"
                                                Visibility="{Binding HasSubTasks, Converter={StaticResource BoolToVisibility}}"/>
+                                    <!-- Note Indicator -->
+                                    <TextBlock Grid.Column="2"
+                                               Text="&#x1F4DD;"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource TextLightBrush}"
+                                               Margin="6,0,0,0"
+                                               VerticalAlignment="Top"
+                                               Opacity="0.6"
+                                               ToolTip="메모 있음"
+                                               Visibility="{Binding HasNotes, Converter={StaticResource BoolToVisibility}}"/>
                                 </Grid>
                                 <!-- 해시태그 표시 (클릭하여 삭제 가능) -->
                                 <ItemsControl ItemsSource="{Binding HashTagList}"
@@ -340,7 +352,7 @@
                             </Button>
 
                             <!-- Add HashTag Button -->
-                            <Button Grid.Column="3"
+                            <Button Grid.Column="4"
                                     Style="{DynamicResource ToggleButtonStyle}"
                                     ToolTip="해시태그 추가"
                                     Margin="2,0"
@@ -370,7 +382,7 @@
                             </Button>
 
                             <!-- Important Toggle (Yellow Star like calendar) -->
-                            <Button Grid.Column="4"
+                            <Button Grid.Column="5"
                                     Style="{DynamicResource ToggleButtonStyle}"
                                     Command="{Binding ToggleImportantCommand}"
                                     ToolTip="중요 표시 (S)"
@@ -394,7 +406,7 @@
                             </Button>
 
                             <!-- Recurrence Button -->
-                            <Button Grid.Column="5"
+                            <Button Grid.Column="6"
                                     Style="{DynamicResource ToggleButtonStyle}"
                                     ToolTip="반복 설정 (클릭)"
                                     Margin="2,0"
@@ -437,7 +449,7 @@
                             </Button>
 
                             <!-- Due Date with Calendar Popup -->
-                            <Grid Grid.Column="6" VerticalAlignment="Center" Margin="6,0,0,0">
+                            <Grid Grid.Column="7" VerticalAlignment="Center" Margin="6,0,0,0">
                                 <Button x:Name="DueDateButton"
                                         Command="{Binding StartEditDueDateCommand}"
                                         MinWidth="60"
@@ -500,7 +512,7 @@
                             </Grid>
 
                             <!-- Delete Button -->
-                            <Button Grid.Column="7"
+                            <Button Grid.Column="8"
                                     Style="{DynamicResource ToggleButtonStyle}"
                                     Command="{Binding DeleteCommand}"
                                     ToolTip="삭제 (Delete)"
@@ -681,19 +693,200 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <!-- Empty State -->
-        <StackPanel VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Visibility="{Binding Tasks.Count, Converter={StaticResource ZeroToVisibilityConverter}}">
-            <TextBlock Text="할일이 없어요!"
-                       FontSize="16"
-                       Foreground="{DynamicResource TextLightBrush}"
-                       HorizontalAlignment="Center"/>
-            <TextBlock Text="위에서 새 할일을 추가해보세요"
+        <!-- Empty State - 앱 사용법 (2열 레이아웃) -->
+        <Grid VerticalAlignment="Center"
+              HorizontalAlignment="Center"
+              MaxWidth="700"
+              Margin="24"
+              Visibility="{Binding Tasks.Count, Converter={StaticResource ZeroToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 환영 메시지 (전체 너비) -->
+            <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,0,20">
+                <TextBlock Text="가지가지에 오신 것을 환영해요!"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextBrush}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,8"/>
+                <TextBlock Text="할일을 추가하고 생산성을 높여보세요"
+                           FontSize="13"
+                           Foreground="{DynamicResource TextLightBrush}"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- 왼쪽 열: 빠른 시작 가이드 -->
+            <Border Grid.Row="1" Grid.Column="0"
+                    Background="{DynamicResource CardBrush}"
+                    CornerRadius="12"
+                    Padding="20"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="빠른 시작 가이드"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextBrush}"
+                               Margin="0,0,0,16"/>
+
+                    <!-- 할일 추가 -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Border Background="{DynamicResource AccentBrush}"
+                                CornerRadius="4"
+                                Padding="6,2"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="N"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="새 할일 추가하기"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource TextBrush}"
+                                   VerticalAlignment="Center"
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- 검색 -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Border Background="{DynamicResource AccentBrush}"
+                                CornerRadius="4"
+                                Padding="6,2"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="F"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="할일 검색하기"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource TextBrush}"
+                                   VerticalAlignment="Center"
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- 해시태그 -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Border Background="#10B981"
+                                CornerRadius="4"
+                                Padding="6,2"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="#"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="해시태그로 할일 분류하기"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource TextBrush}"
+                                   VerticalAlignment="Center"
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- 중요 표시 -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Border Background="#FF9500"
+                                CornerRadius="4"
+                                Padding="6,2"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="★"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="중요한 할일 표시하기"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource TextBrush}"
+                                   VerticalAlignment="Center"
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- 날짜 설정 -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Border Background="#3B82F6"
+                                CornerRadius="4"
+                                Padding="6,2"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="📅"
+                                       FontSize="11"
+                                       Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="마감일 설정하기"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource TextBrush}"
+                                   VerticalAlignment="Center"
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- 반복 설정 -->
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="#8B5CF6"
+                                CornerRadius="4"
+                                Padding="6,2"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="🔄"
+                                       FontSize="11"
+                                       Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="반복 할일 설정하기"
+                                   FontSize="13"
+                                   Foreground="{DynamicResource TextBrush}"
+                                   VerticalAlignment="Center"
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- 오른쪽 열: 팁 섹션 -->
+            <Border Grid.Row="1" Grid.Column="2"
+                    Background="{DynamicResource SidebarBrush}"
+                    CornerRadius="12"
+                    Padding="20"
+                    VerticalAlignment="Stretch">
+                <StackPanel>
+                    <TextBlock Text="💡 팁"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextBrush}"
+                               Margin="0,0,0,16"/>
+                    <TextBlock Text="• 할일 입력 시 #태그, !중요, @프로젝트를 함께 입력할 수 있어요"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextLightBrush}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,12"/>
+                    <TextBlock Text="• 왼쪽 사이드바에서 프로젝트와 해시태그를 관리하세요"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextLightBrush}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,12"/>
+                    <TextBlock Text="• 할일을 완료하면 가지 캐릭터가 기뻐해요!"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextLightBrush}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,12"/>
+                    <TextBlock Text="• M 키를 눌러 할일에 메모를 추가하세요"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextLightBrush}"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <!-- 시작 안내 (전체 너비) -->
+            <TextBlock Grid.Row="2" Grid.ColumnSpan="3"
+                       Text="↑ 위 입력창에서 첫 번째 할일을 추가해보세요"
                        FontSize="12"
-                       Foreground="{DynamicResource TextLightBrush}"
+                       Foreground="{DynamicResource AccentBrush}"
                        HorizontalAlignment="Center"
-                       Margin="0,4,0,0"/>
-        </StackPanel>
+                       Margin="0,20,0,0"/>
+        </Grid>
     </Grid>
 </UserControl>

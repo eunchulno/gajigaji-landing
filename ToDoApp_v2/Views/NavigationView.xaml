@@ -9,89 +9,6 @@
         <converters:BoolToVisibilityInverseConverter x:Key="BoolToVisibilityInverseConverter"/>
         <converters:StringToColorBrushConverter x:Key="StringToColorBrush"/>
 
-        <!-- Thin Overlay ScrollBar Style (Todoist/Notion style) -->
-        <Style x:Key="ThinScrollBarThumb" TargetType="Thumb">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Thumb">
-                        <Border x:Name="thumbBorder"
-                                Background="{DynamicResource TextLightBrush}"
-                                CornerRadius="1.5"
-                                Opacity="0.4"/>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="thumbBorder" Property="Opacity" Value="0.6"/>
-                            </Trigger>
-                            <Trigger Property="IsDragging" Value="True">
-                                <Setter TargetName="thumbBorder" Property="Opacity" Value="0.8"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="ThinOverlayScrollBar" TargetType="ScrollBar">
-            <Setter Property="Width" Value="6"/>
-            <Setter Property="MinWidth" Value="6"/>
-            <Setter Property="Opacity" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ScrollBar">
-                        <Grid x:Name="scrollBarGrid" Margin="2,2,0,2">
-                            <Track x:Name="PART_Track" IsDirectionReversed="True">
-                                <Track.Thumb>
-                                    <Thumb Style="{StaticResource ThinScrollBarThumb}"/>
-                                </Track.Thumb>
-                            </Track>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="ThinOverlayScrollViewer" TargetType="ScrollViewer">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ScrollViewer">
-                        <Grid>
-                            <ScrollContentPresenter Margin="0,0,0,0"/>
-                            <ScrollBar x:Name="PART_VerticalScrollBar"
-                                       HorizontalAlignment="Right"
-                                       Orientation="Vertical"
-                                       Value="{TemplateBinding VerticalOffset}"
-                                       Maximum="{TemplateBinding ScrollableHeight}"
-                                       ViewportSize="{TemplateBinding ViewportHeight}"
-                                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                                       Style="{StaticResource ThinOverlayScrollBar}"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="PART_VerticalScrollBar"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="1" Duration="0:0:0.15"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                                <Trigger.ExitActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="PART_VerticalScrollBar"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0" Duration="0:0:0.3"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.ExitActions>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!-- Nav Button Style with DynamicResource for theme switching -->
         <Style x:Key="LocalNavButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -157,21 +74,106 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>  <!-- Action Buttons -->
+            <RowDefinition Height="Auto"/>  <!-- Main Navigation -->
             <RowDefinition Height="Auto"/>  <!-- Projects -->
             <RowDefinition Height="*"/>     <!-- HashTags -->
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>  <!-- Pet -->
+            <RowDefinition Height="Auto"/>  <!-- Help Button -->
         </Grid.RowDefinitions>
 
-        <!-- Main Navigation -->
-        <StackPanel Grid.Row="0" Margin="8,8,8,4">
-            <!-- App Title Header -->
+        <!-- Action Buttons (Todoist Style) -->
+        <StackPanel Grid.Row="0" Margin="8,0,8,4">
+            <!-- Add Task Button -->
+            <Button Command="{Binding ToggleQuickAddCommand}"
+                    ToolTip="새 할일 추가 (Ctrl+N)"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="10,8"
+                    Margin="0,0,0,2"
+                    Cursor="Hand"
+                    HorizontalContentAlignment="Left">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"
+                                Padding="{TemplateBinding Padding}">
+                            <StackPanel Orientation="Horizontal">
+                                <Grid Width="20" Height="20" Margin="0,0,10,0">
+                                    <Ellipse Fill="{DynamicResource AccentBrush}" Opacity="0.15"/>
+                                    <TextBlock Text="+"
+                                               FontSize="16"
+                                               FontWeight="Bold"
+                                               Foreground="{DynamicResource AccentBrush}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Margin="0,-2,0,0"/>
+                                </Grid>
+                                <TextBlock Text="작업 추가"
+                                           FontSize="13"
+                                           Foreground="{DynamicResource AccentBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource HoverBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <!-- Search Button -->
+            <Button Command="{Binding ToggleSearchCommand}"
+                    ToolTip="검색 (Ctrl+F)"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="10,8"
+                    Cursor="Hand"
+                    HorizontalContentAlignment="Left">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"
+                                Padding="{TemplateBinding Padding}">
+                            <StackPanel Orientation="Horizontal">
+                                <Grid Width="20" Height="20" Margin="0,0,10,0">
+                                    <Path Data="M10,4 A6,6 0 1 1 4,10 M9,9 L14,14"
+                                          Stroke="{DynamicResource TextLightBrush}"
+                                          StrokeThickness="1.5"
+                                          Width="16" Height="16"
+                                          Stretch="Uniform"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                                </Grid>
+                                <TextBlock Text="검색"
+                                           FontSize="13"
+                                           Foreground="{DynamicResource TextBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource HoverBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <!-- App Title -->
             <TextBlock Text="가지가지"
                        FontSize="11"
                        FontWeight="Bold"
                        Foreground="{DynamicResource TextLightBrush}"
-                       Margin="4,0,0,8"/>
+                       Margin="4,12,0,0"/>
+        </StackPanel>
+
+        <!-- Main Navigation -->
+        <StackPanel Grid.Row="1" Margin="8,8,8,4">
 
             <Grid Margin="0,2">
                 <Button x:Name="InboxButton"
@@ -191,18 +193,24 @@
                         </Style>
                     </Button.Style>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="📥" FontSize="14" Margin="0,0,10,0" VerticalAlignment="Center">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsInboxSelected}" Value="True">
-                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <TextBlock Text="할일" VerticalAlignment="Center">
+                        <Grid Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <Path Data="M3,3 L17,3 L17,17 L3,17 Z M6,7 L14,7 M6,10 L14,10 M6,13 L10,13"
+                                  Stroke="{DynamicResource TextLightBrush}"
+                                  StrokeThickness="1.5"
+                                  Width="16" Height="16"
+                                  Stretch="Uniform">
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsInboxSelected}" Value="True">
+                                                <Setter Property="Stroke" Value="{DynamicResource AccentBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Grid>
+                        <TextBlock Text="관리함" VerticalAlignment="Center">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Style.Triggers>
@@ -244,17 +252,25 @@
                         </Style>
                     </Button.Style>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="☀️" FontSize="14" Margin="0,0,10,0" VerticalAlignment="Center">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsTodaySelected}" Value="True">
-                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                        <Grid Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <Border CornerRadius="4" Background="#8B5CF6" Width="18" Height="18">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsTodaySelected}" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+                            <TextBlock Text="{Binding TodayDay}"
+                                       FontSize="10"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
                         <TextBlock Text="오늘" VerticalAlignment="Center">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
@@ -297,18 +313,24 @@
                         </Style>
                     </Button.Style>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="🗓️" FontSize="14" Margin="0,0,10,0" VerticalAlignment="Center">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsWeekSelected}" Value="True">
-                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <TextBlock Text="주간달력" VerticalAlignment="Center">
+                        <Grid Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <Path Data="M2,4 L18,4 L18,18 L2,18 Z M2,8 L18,8 M6,2 L6,6 M14,2 L14,6"
+                                  StrokeThickness="1.5"
+                                  Width="16" Height="16"
+                                  Stretch="Uniform">
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Stroke" Value="{DynamicResource TextLightBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsWeekSelected}" Value="True">
+                                                <Setter Property="Stroke" Value="{DynamicResource AccentBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Grid>
+                        <TextBlock Text="다가오는 일정" VerticalAlignment="Center">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Style.Triggers>
@@ -350,17 +372,23 @@
                         </Style>
                     </Button.Style>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="📅" FontSize="14" Margin="0,0,10,0" VerticalAlignment="Center">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsUpcomingSelected}" Value="True">
-                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                        <Grid Width="20" Height="20" Margin="0,0,10,0" VerticalAlignment="Center">
+                            <Path Data="M2,4 L18,4 L18,18 L2,18 Z M2,8 L18,8 M7,12 L13,12 M7,15 L11,15"
+                                  StrokeThickness="1.5"
+                                  Width="16" Height="16"
+                                  Stretch="Uniform">
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Stroke" Value="#8B5CF6"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsUpcomingSelected}" Value="True">
+                                                <Setter Property="Stroke" Value="{DynamicResource AccentBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Grid>
                         <TextBlock Text="다음" VerticalAlignment="Center">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
@@ -388,7 +416,7 @@
         </StackPanel>
 
         <!-- Projects Section -->
-        <StackPanel Grid.Row="1" Margin="8,8,8,4">
+        <StackPanel Grid.Row="2" Margin="8,8,8,4">
             <!-- Projects Header -->
             <Grid Margin="4,8,0,4">
                 <Grid.ColumnDefinitions>
@@ -630,10 +658,10 @@
         </StackPanel>
 
         <!-- HashTags Section -->
-        <ScrollViewer Grid.Row="2"
+        <ScrollViewer Grid.Row="3"
                       VerticalScrollBarVisibility="Auto"
                       Margin="8,8,8,4"
-                      Style="{StaticResource ThinOverlayScrollViewer}">
+                      Style="{DynamicResource ThinOverlayScrollViewer}">
             <StackPanel>
                 <!-- HashTags Header -->
                 <Grid Margin="4,8,0,4">
@@ -823,19 +851,13 @@
                                         </Border.Style>
                                     </Border>
 
-                                    <!-- Color Dot -->
-                                    <Ellipse Width="10" Height="10"
-                                             Fill="{Binding Color, Converter={StaticResource StringToColorBrush}}"
-                                             VerticalAlignment="Center"
-                                             Margin="0,0,8,0"/>
-
                                     <!-- HashTag Name with # symbol in color -->
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                         <TextBlock Text="#"
                                                    FontSize="12"
                                                    FontWeight="Bold"
                                                    Foreground="{Binding Color, Converter={StaticResource StringToColorBrush}}"
-                                                   Margin="0,0,1,0"/>
+                                                   Margin="0,0,4,0"/>
                                         <TextBlock Text="{Binding Name}"
                                                    FontSize="12"
                                                    TextTrimming="CharacterEllipsis">
@@ -963,13 +985,13 @@
         </ScrollViewer>
 
         <!-- Pet -->
-        <views:PetView Grid.Row="3"
+        <views:PetView Grid.Row="4"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Bottom"
                        Margin="0,8,0,16"/>
 
         <!-- Help Button -->
-        <Button Grid.Row="4"
+        <Button Grid.Row="5"
                 x:Name="HelpButton"
                 Command="{Binding ShowHelpCommand}"
                 Background="Transparent"

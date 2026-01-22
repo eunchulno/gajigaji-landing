@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Editor</title>
+    <!-- Quill CSS (Local) -->
+    <link href="quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="editor.css">
+</head>
+<body class="dark">
+    <!-- Quill Toolbar -->
+    <div id="toolbar">
+        <span class="ql-formats">
+            <select class="ql-header">
+                <option value="1">제목 1</option>
+                <option value="2">제목 2</option>
+                <option value="3">제목 3</option>
+                <option selected>본문</option>
+            </select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-bold" title="굵게 (Ctrl+B)"></button>
+            <button class="ql-italic" title="기울임 (Ctrl+I)"></button>
+            <button class="ql-underline" title="밑줄 (Ctrl+U)"></button>
+            <button class="ql-strike" title="취소선"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-list" value="ordered" title="번호 목록"></button>
+            <button class="ql-list" value="bullet" title="글머리 기호"></button>
+            <button class="ql-list" value="check" title="체크리스트"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-blockquote" title="인용"></button>
+            <button class="ql-code-block" title="코드 블록"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-link" title="링크 (Ctrl+K)"></button>
+            <button class="ql-image" title="이미지"></button>
+        </span>
+        <span class="ql-formats">
+            <select class="ql-color" title="글자 색상"></select>
+            <select class="ql-background" title="배경 색상"></select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-clean" title="서식 제거"></button>
+        </span>
+    </div>
+
+    <!-- Quill Editor -->
+    <div id="editor"></div>
+
+    <!-- Quill JS (Local) -->
+    <script src="quill.min.js"></script>
+    <script>
+        let quill = null;
+        let saveTimeout = null;
+        let isInitialLoad = true;
+
+        // Initialize Quill
+        function initEditor() {
+            quill = new Quill('#editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: '#toolbar',
+                    history: {
+                        delay: 500,
+                        maxStack: 100,
+                        userOnly: true
+                    },
+                    keyboard: {
+                        bindings: {
+                            undo: {
+                                key: 'Z',
+                                shortKey: true,
+                                handler: function() {
+                                    this.quill.history.undo();
+                                }
+                            },
+                            redo: {
+                                key: 'Z',
+                                shortKey: true,
+                                shiftKey: true,
+                                handler: function() {
+                                    this.quill.history.redo();
+                                }
+                            },
+                            redoAlt: {
+                                key: 'Y',
+                                shortKey: true,
+                                handler: function() {
+                                    this.quill.history.redo();
+                                }
+                            }
+                        }
+                    }
+                },
+                placeholder: '메모를 작성하세요...'
+            });
+
+            // Listen for text changes
+            quill.on('text-change', function(delta, oldDelta, source) {
+                if (source === 'user' && !isInitialLoad) {
+                    debouncedSave();
+                }
+            });
+
+            // Handle paste for images
+            quill.root.addEventListener('paste', handlePaste);
+
+            // Handle drop for images
+            quill.root.addEventListener('drop', handleDrop);
+
+            // Notify C# that editor is ready
+            notifyReady();
+        }
+
+        // Debounced save function
+        function debouncedSave() {
+            if (saveTimeout) {
+                clearTimeout(saveTimeout);
+            }
+            saveTimeout = setTimeout(() => {
+                saveContent();
+            }, 300);
+        }
+
+        // Save content to C#
+        function saveContent() {
+            if (window.chrome && window.chrome.webview && quill) {
+                const content = quill.root.innerHTML;
+                window.chrome.webview.postMessage({
+                    type: 'save',
+                    content: content
+                });
+            }
+        }
+
+        // Notify ready
+        function notifyReady() {
+            if (window.chrome && window.chrome.webview) {
+                window.chrome.webview.postMessage({
+                    type: 'ready'
+                });
+            }
+        }
+
+        // Handle paste event for images
+        function handlePaste(e) {
+            const clipboardData = e.clipboardData || window.clipboardData;
+            const items = clipboardData.items;
+
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    e.preventDefault();
+                    const file = items[i].getAsFile();
+                    insertImage(file);
+                    break;
+                }
+            }
+        }
+
+        // Handle drop event for images
+        function handleDrop(e) {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].type.indexOf('image') !== -1) {
+                    insertImage(files[i]);
+                }
+            }
+        }
+
+        // Insert image as base64
+        function insertImage(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const range = quill.getSelection(true);
+                quill.insertEmbed(range.index, 'image', e.target.result);
+                quill.setSelection(range.index + 1);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Set content from C# (HTML format)
+        window.setContent = function(html) {
+            if (quill) {
+                isInitialLoad = true;
+                if (html && html.trim()) {
+                    quill.root.innerHTML = html;
+                } else {
+                    quill.setText('');
+                }
+                setTimeout(() => {
+                    isInitialLoad = false;
+                }, 100);
+            }
+        };
+
+        // Get current content as HTML
+        window.getContent = function() {
+            if (quill) {
+                return quill.root.innerHTML;
+            }
+            return '';
+        };
+
+        // Set theme
+        window.setTheme = function(isDark) {
+            document.body.className = isDark ? 'dark' : 'light';
+        };
+
+        // Focus editor
+        window.focusEditor = function() {
+            if (quill) {
+                quill.focus();
+            }
+        };
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initEditor);
+    </script>
+</body>
+</html>

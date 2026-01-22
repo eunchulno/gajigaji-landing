@@ -77,11 +77,7 @@ public partial class TaskListView : UserControl
                 e.Handled = true;
                 FocusEditTextBox();
             }
-            else if (e.ClickCount == 1 && task.HasSubTasks)
-            {
-                // 싱글클릭: 서브할일 있으면 확장/축소
-                task.ToggleExpandCommand.Execute(null);
-            }
+            // 싱글클릭은 PreviewMouseLeftButtonDown에서 통합 처리 (메모 패널 + 서브태스크 확장)
         }
     }
 
@@ -236,6 +232,44 @@ public partial class TaskListView : UserControl
     private void TaskList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         _dragStartPoint = e.GetPosition(null);
+
+        // Skip toggle if clicking on interactive elements (buttons, checkboxes, etc.)
+        var originalSource = e.OriginalSource as DependencyObject;
+        if (IsInteractiveElement(originalSource))
+            return;
+
+        // Handle task click - toggle note panel and subtasks
+        var listBoxItem = FindAncestor<ListBoxItem>((DependencyObject)e.OriginalSource);
+        if (listBoxItem != null)
+        {
+            var clickedTask = listBoxItem.DataContext as TaskItemViewModel;
+            if (clickedTask != null && DataContext is MainViewModel vm)
+            {
+                // Call ToggleNotePanel for both new and same task clicks
+                vm.ToggleNotePanel(clickedTask);
+            }
+        }
+    }
+
+    private static bool IsInteractiveElement(DependencyObject? element)
+    {
+        while (element != null)
+        {
+            if (element is System.Windows.Controls.Button ||
+                element is System.Windows.Controls.CheckBox ||
+                element is System.Windows.Controls.Primitives.ToggleButton ||
+                element is System.Windows.Controls.ComboBox ||
+                element is System.Windows.Controls.Calendar ||
+                element is System.Windows.Controls.Primitives.CalendarItem ||
+                element is System.Windows.Controls.Primitives.CalendarButton ||
+                element is System.Windows.Controls.Primitives.CalendarDayButton ||
+                element is System.Windows.Controls.DatePicker)
+            {
+                return true;
+            }
+            element = VisualTreeHelper.GetParent(element);
+        }
+        return false;
     }
 
     private void TaskList_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)

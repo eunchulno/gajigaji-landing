@@ -1,0 +1,73 @@
+<UserControl x:Class="SlimeTodo.Views.NoteEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf">
+
+    <Grid Background="{DynamicResource CardBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="16,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Task Title (Editable TextBox) -->
+                <TextBox x:Name="TitleTextBox"
+                         Grid.Column="0"
+                         Text="{Binding DataContext.SelectedTask.Title, RelativeSource={RelativeSource AncestorType=Window}, UpdateSourceTrigger=PropertyChanged}"
+                         FontSize="14"
+                         FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextBrush}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Padding="0"
+                         VerticalAlignment="Center"
+                         CaretBrush="{DynamicResource TextBrush}"
+                         KeyDown="TitleTextBox_KeyDown"/>
+
+                <!-- Close Button -->
+                <Button Grid.Column="1"
+                        Command="{Binding DataContext.CloseNotePanelCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="8,4"
+                        Cursor="Hand"
+                        ToolTip="닫기 (Esc)">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="4"
+                                    Padding="{TemplateBinding Padding}">
+                                <TextBlock Text="✕"
+                                           FontSize="14"
+                                           Foreground="{DynamicResource TextLightBrush}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="{DynamicResource HoverBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Quill Editor (WebView2) -->
+        <wv2:WebView2 x:Name="QuillEditor"
+                      Grid.Row="1"
+                      DefaultBackgroundColor="Transparent"/>
+    </Grid>
+</UserControl>

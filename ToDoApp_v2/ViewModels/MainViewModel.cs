@@ -73,6 +73,13 @@ public class MainViewModel : ViewModelBase, IDisposable
     // Shortcut Hints (Ctrl 키 누름 상태)
     private bool _showShortcuts;
 
+    // Note Panel
+    private TaskItemViewModel? _selectedTask;
+    private bool _isNotePanelVisible;
+
+    // Week ViewModel
+    private WeekViewModel? _weekViewModel;
+
     public MainViewModel()
     {
         _storageService = new StorageService();
@@ -93,6 +100,7 @@ public class MainViewModel : ViewModelBase, IDisposable
         ClearQuickAddCommand = new RelayCommand(() => QuickAddText = string.Empty);
         ToggleShowCompletedCommand = new RelayCommand(ToggleShowCompleted);
         CloseSearchCommand = new RelayCommand(CloseSearch);
+        ToggleSearchCommand = new RelayCommand(ToggleSearch);
         PetClickCommand = new RelayCommand(OnPetClicked);
         UndoCommand = new RelayCommand(PerformUndo, () => _undoService.CanUndo);
         RedoCommand = new RelayCommand(PerformRedo, () => _undoService.CanRedo);
@@ -119,6 +127,9 @@ public class MainViewModel : ViewModelBase, IDisposable
         ToggleShowHiddenHashTagsCommand = new RelayCommand(() => { ShowHiddenHashTags = !ShowHiddenHashTags; LoadHashTags(); });
         ConfirmDeleteHashTagCommand = new RelayCommand(ExecuteDeleteHashTag);
         CancelDeleteHashTagCommand = new RelayCommand(() => { ShowDeleteHashTagConfirm = false; _pendingDeleteHashTagId = null; });
+
+        // Note Panel Commands
+        CloseNotePanelCommand = new RelayCommand(CloseNotePanel);
 
         // Timer for returning from Excited mood
         _excitedTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
@@ -251,6 +262,7 @@ public class MainViewModel : ViewModelBase, IDisposable
     public bool IsWeekSelected => CurrentView == ViewType.Week && SelectedProjectId == null && SelectedHashTagId == null;
     public bool IsUpcomingSelected => CurrentView == ViewType.Upcoming && SelectedProjectId == null && SelectedHashTagId == null;
     public bool IsProjectSelected => SelectedProjectId != null;
+    public string TodayDay => DateTime.Now.Day.ToString();
 
     // Project Properties
     public string? SelectedProjectId
@@ -404,6 +416,57 @@ public class MainViewModel : ViewModelBase, IDisposable
         set => SetProperty(ref _showShortcuts, value);
     }
 
+    // Note Panel
+    public TaskItemViewModel? SelectedTask
+    {
+        get => _selectedTask;
+        set
+        {
+            if (SetProperty(ref _selectedTask, value))
+            {
+                IsNotePanelVisible = value != null;
+            }
+        }
+    }
+
+    public bool IsNotePanelVisible
+    {
+        get => _isNotePanelVisible;
+        set => SetProperty(ref _isNotePanelVisible, value);
+    }
+
+    public ICommand CloseNotePanelCommand { get; }
+
+    // Week ViewModel
+    public WeekViewModel WeekViewModel
+    {
+        get
+        {
+            if (_weekViewModel == null)
+            {
+                _weekViewModel = new WeekViewModel(
+                    _taskService,
+                    _undoService,
+                    OnTaskCompleted,
+                    OnTaskDataChanged,
+                    SyncShowCompletedFromWeek);
+            }
+            return _weekViewModel;
+        }
+    }
+
+    private void SyncShowCompletedFromWeek(bool value)
+    {
+        // WeekViewModel에서 ShowCompleted가 변경되면 MainViewModel도 동기화
+        if (_showCompleted != value)
+        {
+            _showCompleted = value;
+            OnPropertyChanged(nameof(ShowCompleted));
+            OnPropertyChanged(nameof(ShowCompletedText));
+            LoadTasks();
+        }
+    }
+
     // Quick Add Inline
     public bool IsQuickAddVisible
     {
@@ -525,6 +588,7 @@ public class MainViewModel : ViewModelBase, IDisposable
     public ICommand ClearQuickAddCommand { get; }
     public ICommand ToggleShowCompletedCommand { get; }
     public ICommand CloseSearchCommand { get; }
+    public ICommand ToggleSearchCommand { get; }
     public ICommand PetClickCommand { get; }
     public ICommand UndoCommand { get; }
     public ICommand RedoCommand { get; }
@@ -609,6 +673,12 @@ public class MainViewModel : ViewModelBase, IDisposable
                 "Upcoming" => ViewType.Upcoming,
                 _ => ViewType.Today
             };
+
+            // Week 뷰로 이동 시 WeekViewModel 데이터 갱신
+            if (viewName == "Week")
+            {
+                WeekViewModel.LoadWeekData();
+            }
         }
     }
 
@@ -661,6 +731,35 @@ public class MainViewModel : ViewModelBase, IDisposable
         {
             QuickAddText = string.Empty;
             HideHashTagSuggestions();
+        }
+    }
+
+    private void CloseNotePanel()
+    {
+        SelectedTask = null;
+    }
+
+    public void ToggleNotePanel(TaskItemViewModel task)
+    {
+        if (SelectedTask == task && IsNotePanelVisible)
+        {
+            // Same task and panel is visible - close panel and collapse subtasks
+            IsNotePanelVisible = false;
+            if (task.HasSubTasks && task.IsExpanded)
+            {
+                task.ToggleExpandCommand.Execute(null);
+            }
+        }
+        else
+        {
+            // Different task or panel was closed - open panel and expand subtasks
+            _selectedTask = task;
+            OnPropertyChanged(nameof(SelectedTask));
+            IsNotePanelVisible = true;
+            if (task.HasSubTasks && !task.IsExpanded)
+            {
+                task.ToggleExpandCommand.Execute(null);
+            }
         }
     }
 
@@ -841,6 +940,8 @@ public class MainViewModel : ViewModelBase, IDisposable
     {
         ShowCompleted = !ShowCompleted;
         OnPropertyChanged(nameof(ShowCompletedText));
+        // WeekViewModel과 동기화
+        _weekViewModel?.SyncShowCompleted(ShowCompleted);
     }
 
     private void OnTaskDataChanged()

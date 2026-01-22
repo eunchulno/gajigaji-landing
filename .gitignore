@@ -1,2 +1,38 @@
-landing-page/
-nul
+# Build outputs
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Temp files
+tmpclaude-*
+*.tmp
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# User data (should not be committed)
+data.json
+
+# NuGet
+*.nupkg
+packages/
+
+# Rider/JetBrains
+.idea/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log

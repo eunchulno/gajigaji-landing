@@ -55,12 +55,14 @@ public class TaskItemViewModel : ViewModelBase
     public string Title
     {
         get => _task.Title;
-        private set
+        set
         {
             if (_task.Title != value)
             {
                 _task.Title = value;
+                _taskService.UpdateTask(_task);
                 OnPropertyChanged();
+                // 제목 변경 시에는 전체 목록 새로고침 불필요 (메모 패널 닫힘 방지)
             }
         }
     }
@@ -181,6 +183,26 @@ public class TaskItemViewModel : ViewModelBase
     public bool HasRecurrence => _task.Recurrence != RecurrenceType.None;
 
     public bool HasReminder => _task.ReminderTime.HasValue && !_task.ReminderNotified;
+
+    // Notes
+    public string Notes
+    {
+        get => _task.Notes;
+        set
+        {
+            if (_task.Notes != value)
+            {
+                _task.Notes = value;
+                _task.NotesModifiedAt = DateTime.Now;
+                _taskService.UpdateTask(_task);
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HasNotes));
+                // 메모 변경 시에는 전체 목록 새로고침 불필요
+            }
+        }
+    }
+
+    public bool HasNotes => !string.IsNullOrWhiteSpace(_task.Notes);
 
     public string ReminderText
     {

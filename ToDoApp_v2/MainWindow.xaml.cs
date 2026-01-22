@@ -293,12 +293,18 @@ public partial class MainWindow : Window
     {
         if (DataContext is not MainViewModel vm) return;
 
-        // Escape - close help modal or search
+        // Escape - close help modal, note panel, or search
         if (e.Key == Key.Escape)
         {
             if (vm.ShowHelpModal)
             {
                 vm.ShowHelpModal = false;
+                e.Handled = true;
+                return;
+            }
+            if (vm.IsNotePanelVisible)
+            {
+                vm.CloseNotePanelCommand.Execute(null);
                 e.Handled = true;
                 return;
             }
@@ -344,8 +350,12 @@ public partial class MainWindow : Window
                     e.Handled = true;
                     return;
                 case Key.Z:
-                    vm.PerformUndo();
-                    e.Handled = true;
+                    // Don't intercept Ctrl+Z when note editor (Quill) is focused
+                    if (!IsNoteEditorFocused())
+                    {
+                        vm.PerformUndo();
+                        e.Handled = true;
+                    }
                     return;
             }
         }
@@ -362,6 +372,21 @@ public partial class MainWindow : Window
             vm.ToggleShowCompletedCommand.Execute(null);
             e.Handled = true;
         }
+        // Toggle Note Panel: M
+        else if (e.Key == Key.M && !IsTextBoxFocused())
+        {
+            if (vm.IsNotePanelVisible)
+            {
+                vm.CloseNotePanelCommand.Execute(null);
+            }
+            else if (vm.SelectedTask != null)
+            {
+                // Note panel opens automatically when task is selected
+                // Focus the note editor
+                NoteEditor?.FocusEditor();
+            }
+            e.Handled = true;
+        }
         // J/K for list navigation
         else if ((e.Key == Key.J || e.Key == Key.K) && !IsTextBoxFocused())
         {
@@ -373,6 +398,34 @@ public partial class MainWindow : Window
     private bool IsTextBoxFocused()
     {
         return Keyboard.FocusedElement is System.Windows.Controls.TextBox;
+    }
+
+    private bool IsNoteEditorFocused()
+    {
+        // Check if Note Editor (WebView2) has focus
+        if (DataContext is MainViewModel vm && vm.IsNotePanelVisible)
+        {
+            var focusedElement = Keyboard.FocusedElement;
+
+            // If a TextBox is focused, check if it's inside the NoteEditor (title box)
+            if (focusedElement is System.Windows.Controls.TextBox tb)
+            {
+                var parent = System.Windows.Media.VisualTreeHelper.GetParent(tb);
+                while (parent != null)
+                {
+                    if (parent is Views.NoteEditorView)
+                        return true;
+                    parent = System.Windows.Media.VisualTreeHelper.GetParent(parent);
+                }
+                // TextBox is focused but not in NoteEditor - app's textbox has focus
+                return false;
+            }
+
+            // No TextBox focused - if note panel is visible, assume WebView2 has focus
+            // WebView2 doesn't report focus correctly to WPF, so we use this heuristic
+            return true;
+        }
+        return false;
     }
 
     private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)

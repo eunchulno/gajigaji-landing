@@ -5,10 +5,10 @@
         xmlns:vm="clr-namespace:SlimeTodo.ViewModels"
         xmlns:converters="clr-namespace:SlimeTodo.Converters"
         Title="GajiGaji"
-        Width="800"
-        Height="600"
-        MinWidth="600"
-        MinHeight="400"
+        Width="1100"
+        Height="700"
+        MinWidth="800"
+        MinHeight="500"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource BackgroundBrush}"
         PreviewKeyDown="Window_PreviewKeyDown">
@@ -401,8 +401,14 @@
 
                     <!-- Content Area -->
                     <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" MinWidth="300"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
                         <!-- Task List (non-Week views) -->
-                        <views:TaskListView x:Name="TaskListView">
+                        <views:TaskListView x:Name="TaskListView" Grid.Column="0">
                             <views:TaskListView.Style>
                                 <Style TargetType="UserControl">
                                     <Setter Property="Visibility" Value="Visible"/>
@@ -416,7 +422,8 @@
                         </views:TaskListView>
 
                         <!-- Week View -->
-                        <views:WeekView x:Name="WeekView">
+                        <views:WeekView x:Name="WeekView" Grid.Column="0"
+                                        DataContext="{Binding WeekViewModel}">
                             <views:WeekView.Style>
                                 <Style TargetType="UserControl">
                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -428,6 +435,25 @@
                                 </Style>
                             </views:WeekView.Style>
                         </views:WeekView>
+
+                        <!-- GridSplitter -->
+                        <GridSplitter Grid.Column="1"
+                                      Width="1"
+                                      Background="{DynamicResource BorderBrush}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Stretch"
+                                      Visibility="{Binding IsNotePanelVisible, Converter={StaticResource BoolToVisibility}}"/>
+
+                        <!-- Note Editor Panel -->
+                        <Border Grid.Column="2"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1,0,0,0"
+                                Width="350"
+                                MinWidth="250"
+                                MaxWidth="600"
+                                Visibility="{Binding IsNotePanelVisible, Converter={StaticResource BoolToVisibility}}">
+                            <views:NoteEditorView x:Name="NoteEditor"/>
+                        </Border>
                     </Grid>
                 </Grid>
             </Border>
@@ -522,7 +548,8 @@
                     </Grid>
 
                     <!-- Shortcuts List -->
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="400">
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="400"
+                                  Style="{DynamicResource ThinOverlayScrollViewer}">
                         <StackPanel>
                             <!-- Navigation -->
                             <TextBlock Text="네비게이션"

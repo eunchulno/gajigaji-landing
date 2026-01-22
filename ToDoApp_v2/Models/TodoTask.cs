@@ -26,6 +26,10 @@ public class TodoTask
     // Reminder
     public DateTime? ReminderTime { get; set; }
     public bool ReminderNotified { get; set; }
+
+    // Notes (Markdown)
+    public string Notes { get; set; } = string.Empty;
+    public DateTime? NotesModifiedAt { get; set; }
 }
 
 public enum RecurrenceType
